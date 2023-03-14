@@ -19,12 +19,14 @@ class trackCalorie{
     addMeal(meal){
         this._meals.push(meal)
         this._totalCalorie += meal.calories
+        this._displayNewMeal(meal)
         this._render()
     }
 
-    addWorkout(workouts){
-        this._workouts.push(workouts)
-        this._totalCalorie -= workouts.calories
+    addWorkout(workout){
+        this._workouts.push(workout)
+        this._totalCalorie -= workout.calories
+        this._displayNewWorkout(workout)
         this._render()
     }
 
@@ -78,8 +80,57 @@ _displayProgressBar(){
     const progress = (this._totalCalorie / this._calorieLimit)* 100
     const width = Math.min(progress,100)
     progressEl.style.width = `${width}%`
+}
 
+_displayNewMeal(meal){
+    const mealList = document.getElementById('meal-items')
+    const  mealItem = document.createElement('div');
+    mealItem.classList.add('card','my-2');
+    mealItem.setAttribute('data-id',meal.id)
+    mealItem.innerHTML = 
+    `
+    <div class="card-body">
+    <div class="d-flex align-items-center justify-content-between">
+      <h4 class="mx-1"> ${meal.name}</h4>
+      <div
+        class="fs-1 bg-secondary text-white text-center rounded-2 px-2 px-sm-5"
+      >
+        ${meal.calories}
+      </div>
+      <button class="delete btn btn-danger btn-sm mx-2">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+  </div>
+    
+    `
+  mealList.appendChild(mealItem)
 
+}
+
+_displayNewWorkout(workout){
+    const workoutList = document.getElementById('workout-items')
+    const  workoutItem = document.createElement('div');
+    workoutItem.classList.add('card','my-2');
+    workoutItem.setAttribute('data-id',workout.id)
+    workoutItem.innerHTML = 
+    `
+    <div class="card-body">
+    <div class="d-flex align-items-center justify-content-between">
+      <h4 class="mx-1"> ${workout.name}</h4>
+      <div
+        class="fs-1 bg-secondary text-white text-center rounded-2 px-2 px-sm-5"
+      >
+        ${workout.calories}
+      </div>
+      <button class="delete btn btn-danger btn-sm mx-2">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+  </div>
+    
+    `
+  workoutList.appendChild(workoutItem)
 
 }
 
