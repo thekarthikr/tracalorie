@@ -2,16 +2,18 @@
 
 class trackCalorie{
     constructor(){
-        this._calorieLimit = 2000
-        this._totalCalorie = 0
-        this._meals = []
-        this._workouts = []
+        this._calorieLimit = Storage.getCalorieLimit();
+        this._totalCalorie = Storage.getTotalCalories()
+        this._meals = Storage.getMeal()
+        this._workouts = Storage.getWorkout()
         this._displayCaloriesTotal()
         this._displayCaloriesLimit()
         this._displayCaloriesConsumed()
         this._displayCaloriesBurned()
         this._displayCaloriesRemaining()
         this._displayProgressBar()
+
+        document.getElementById('limit').value = this._calorieLimit;
     }
 
 // Public Methods
@@ -19,6 +21,8 @@ class trackCalorie{
     addMeal(meal){
         this._meals.push(meal)
         this._totalCalorie += meal.calories
+        Storage.setTotalCalories(this._totalCalorie)
+        Storage.saveMeal(meal)
         this._displayNewMeal(meal)
         this._render()
     }
@@ -26,6 +30,8 @@ class trackCalorie{
     addWorkout(workout){
         this._workouts.push(workout)
         this._totalCalorie -= workout.calories
+        Storage.setTotalCalories(this._totalCalorie)
+        Storage.saveWorkout(workout)
         this._displayNewWorkout(workout)
         this._render()
     }
@@ -37,7 +43,9 @@ class trackCalorie{
         if (index !== -1) {
           const meal = this._meals[index];
           this._totalCalories -= meal.calories;
+          Storage.setTotalCalories(this._totalCalorie)
           this._meals.splice(index, 1);
+          Storage.removeMeal(id)
           this._render();
         }
       }
@@ -47,8 +55,10 @@ class trackCalorie{
     
         if (index !== -1) {
           const workout = this._workouts[index];
-          this._totalCalories += workout.calories;    
+          this._totalCalories += workout.calories;
+          Storage.setTotalCalories(this._totalCalorie)    
           this._workouts.splice(index, 1);
+          Storage.removeWorkout(id)
           this._render();
         }
       }
@@ -58,14 +68,22 @@ class trackCalorie{
         this._totalCalorie = 0
         this._meals =[]
         this._workouts =[]
+        Storage.reset()
         this._render()
       }
 
 
       setLimit(calorieLimit){
         this._calorieLimit = calorieLimit;
+        Storage.setCalorieLimit(calorieLimit)
         this._displayCaloriesLimit()
         this._render()
+      }
+    
+
+      loadItems(){
+        this._meals.forEach(meal => this._displayNewMeal(meal))
+        this._workouts.forEach(workout => this._displayNewWorkout(workout))
       }
     
 //Private Methods
@@ -201,6 +219,106 @@ class Workout{
     }
 }
 
+// Local Storage
+
+class Storage{
+    static getCalorieLimit(defaultLimit = 2000){
+        let calorieLimit;
+
+        if(localStorage.getItem('calorieLimit') === null){
+            calorieLimit = defaultLimit;
+        }else{
+            calorieLimit = +localStorage.getItem('calorieLimit')
+        }
+        return calorieLimit;
+    }
+
+    static setCalorieLimit(calorieLimit){
+        localStorage.setItem('calorieLimit',calorieLimit)
+    }
+
+
+    static getTotalCalories(defaultCalories = 0){
+        let totalCalories;
+
+        if(localStorage.getItem('totalCalories') === null){
+            totalCalories = defaultCalories;
+        }else{
+            totalCalories = +localStorage.getItem('totalCalories')
+        }
+        return totalCalories;
+    }
+
+    static setTotalCalories(calories){
+        localStorage.setItem('totalCalories',calories)
+    }
+
+
+    static getMeal(){
+        let meals;
+        if(localStorage.getItem('meals')=== null){
+            meals = []
+        }else{
+            meals = JSON.parse(localStorage.getItem('meals'))
+        }
+        return meals;
+    }
+
+
+    static saveMeal(meal){
+        const meals = Storage.getMeal();
+         meals.push(meal);
+        
+         localStorage.setItem('meals',JSON.stringify(meals))
+    }
+
+    static removeMeal(id){
+        const meals = Storage.getMeal()
+        meals.forEach((meal , index)=>{
+           if(meal.id === id){
+            meals.splice(index,1)
+           }
+        })
+
+        localStorage.setItem('meals',JSON.stringify(meals))
+    }
+
+    static getWorkout(){
+        let workouts;
+        if(localStorage.getItem('workouts') === null){
+            workouts = []
+        }else{
+            workouts = JSON.parse(localStorage.getItem('workouts'))
+        }
+
+        return workouts;
+    }  
+
+    static saveWorkout(workout){
+        const workouts = Storage.getWorkout()
+        workouts.push(workout)
+
+        localStorage.setItem('workouts',JSON.stringify(workouts))
+    }
+
+    static removeWorkout(id){
+        const workouts = Storage.getWorkout()
+        workouts.forEach((meal , index)=>{
+           if(meal.id === id){
+            workouts.splice(index,1)
+           }
+        })
+
+        localStorage.setItem('workouts',JSON.stringify(workouts))
+    }
+
+    static reset(){
+        localStorage.removeItem('totalCalories')
+        localStorage.removeItem('meals')
+        localStorage.removeItem('workouts')
+    }
+
+}
 
 class App{
     constructor(){
@@ -221,6 +339,7 @@ class App{
    
         document.getElementById('limit-form').addEventListener('submit',this._setLimit.bind(this))
       
+        this._tracker.loadItems()
     }
 
 
