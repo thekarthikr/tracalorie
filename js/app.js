@@ -11,6 +11,7 @@ class trackCalorie{
         this._displayCaloriesConsumed()
         this._displayCaloriesBurned()
         this._displayCaloriesRemaining()
+        this._displayProgressBar()
     }
 
 // Public Methods
@@ -57,14 +58,37 @@ _displayCaloriesRemaining(){
     const caloriesRemainingEl = document.getElementById('calories-remaining')
     const remaining = this._calorieLimit - this._totalCalorie
     caloriesRemainingEl.innerHTML = remaining
+    const progressEl = document.getElementById('calorie-progress')
+
+    if(remaining < 0){
+        caloriesRemainingEl.parentElement.parentElement.classList.remove('bg-light')
+        caloriesRemainingEl.parentElement.parentElement.classList.add('bg-danger')
+        progressEl.classList.remove('bg-success')
+        progressEl.classList.add('bg-danger')
+      }else{
+        caloriesRemainingEl.parentElement.parentElement.classList.add('bg-light')
+        caloriesRemainingEl.parentElement.parentElement.classList.remove('bg-danger')
+        progressEl.classList.add('bg-success')
+        progressEl.classList.remove('bg-danger')
+      }
 }
 
+_displayProgressBar(){
+    const progressEl = document.getElementById('calorie-progress')
+    const progress = (this._totalCalorie / this._calorieLimit)* 100
+    const width = Math.min(progress,100)
+    progressEl.style.width = `${width}%`
+
+
+
+}
 
 _render(){
     this._displayCaloriesTotal();
     this._displayCaloriesConsumed()
     this._displayCaloriesBurned()
     this._displayCaloriesRemaining()
+    this._displayProgressBar()
 }
 
 }
@@ -92,7 +116,7 @@ class Workout{
 
 const tracker = new trackCalorie()
 
-const bf = new Meal('Breakfast',300)
+const bf = new Meal('Breakfast',2200)
 const l = new Meal('Launch', 200)
 const workout = new Workout('running',400)
 
