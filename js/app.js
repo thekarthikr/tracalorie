@@ -3,11 +3,12 @@
 class trackCalorie{
     constructor(){
         this._calorieLimit = Storage.getCalorieLimit();
-        this._totalCalorie = Storage.getTotalCalories()
-        this._meals = Storage.getMeal()
-        this._workouts = Storage.getWorkout()
-        this._displayCaloriesTotal()
+        this._totalCalories = Storage.getTotalCalories()
+        this._meals = Storage.getMeals()
+        this._workouts = Storage.getWorkouts()
+      
         this._displayCaloriesLimit()
+        this._displayCaloriesTotal()
         this._displayCaloriesConsumed()
         this._displayCaloriesBurned()
         this._displayCaloriesRemaining()
@@ -20,8 +21,8 @@ class trackCalorie{
 
     addMeal(meal){
         this._meals.push(meal)
-        this._totalCalorie += meal.calories
-        Storage.setTotalCalories(this._totalCalorie)
+        this._totalCalories += meal.calories
+        Storage.setTotalCalories(this._totalCalories)
         Storage.saveMeal(meal)
         this._displayNewMeal(meal)
         this._render()
@@ -29,8 +30,8 @@ class trackCalorie{
 
     addWorkout(workout){
         this._workouts.push(workout)
-        this._totalCalorie -= workout.calories
-        Storage.setTotalCalories(this._totalCalorie)
+        this._totalCalories -= workout.calories
+        Storage.setTotalCalories(this._totalCalories)
         Storage.saveWorkout(workout)
         this._displayNewWorkout(workout)
         this._render()
@@ -43,7 +44,7 @@ class trackCalorie{
         if (index !== -1) {
           const meal = this._meals[index];
           this._totalCalories -= meal.calories;
-          Storage.setTotalCalories(this._totalCalorie)
+          Storage.setTotalCalories(this._totalCalories)
           this._meals.splice(index, 1);
           Storage.removeMeal(id)
           this._render();
@@ -56,7 +57,7 @@ class trackCalorie{
         if (index !== -1) {
           const workout = this._workouts[index];
           this._totalCalories += workout.calories;
-          Storage.setTotalCalories(this._totalCalorie)    
+          Storage.setTotalCalories(this._totalCalories)    
           this._workouts.splice(index, 1);
           Storage.removeWorkout(id)
           this._render();
@@ -65,7 +66,7 @@ class trackCalorie{
 
       reset(){
        
-        this._totalCalorie = 0
+        this._totalCalories = 0
         this._meals =[]
         this._workouts =[]
         Storage.reset()
@@ -90,7 +91,7 @@ class trackCalorie{
 
 _displayCaloriesTotal(){
   const totalCaloriesEl = document.getElementById('calories-total')
-  totalCaloriesEl.innerHTML = this._totalCalorie;
+  totalCaloriesEl.innerHTML = this._totalCalories;
 }
 
 _displayCaloriesLimit(){
@@ -112,7 +113,7 @@ _displayCaloriesBurned(){
 
 _displayCaloriesRemaining(){
     const caloriesRemainingEl = document.getElementById('calories-remaining')
-    const remaining = this._calorieLimit - this._totalCalorie
+    const remaining = this._calorieLimit - this._totalCalories
     caloriesRemainingEl.innerHTML = remaining
     const progressEl = document.getElementById('calorie-progress')
 
@@ -131,7 +132,7 @@ _displayCaloriesRemaining(){
 
 _displayProgressBar(){
     const progressEl = document.getElementById('calorie-progress')
-    const progress = (this._totalCalorie / this._calorieLimit)* 100
+    const progress = (this._totalCalories / this._calorieLimit)* 100
     const width = Math.min(progress,100)
     progressEl.style.width = `${width}%`
 }
@@ -254,7 +255,7 @@ class Storage{
     }
 
 
-    static getMeal(){
+    static getMeals(){
         let meals;
         if(localStorage.getItem('meals')=== null){
             meals = []
@@ -266,14 +267,14 @@ class Storage{
 
 
     static saveMeal(meal){
-        const meals = Storage.getMeal();
+        const meals = Storage.getMeals();
          meals.push(meal);
         
          localStorage.setItem('meals',JSON.stringify(meals))
     }
 
     static removeMeal(id){
-        const meals = Storage.getMeal()
+        const meals = Storage.getMeals()
         meals.forEach((meal , index)=>{
            if(meal.id === id){
             meals.splice(index,1)
@@ -283,7 +284,7 @@ class Storage{
         localStorage.setItem('meals',JSON.stringify(meals))
     }
 
-    static getWorkout(){
+    static getWorkouts(){
         let workouts;
         if(localStorage.getItem('workouts') === null){
             workouts = []
@@ -295,14 +296,14 @@ class Storage{
     }  
 
     static saveWorkout(workout){
-        const workouts = Storage.getWorkout()
+        const workouts = Storage.getWorkouts()
         workouts.push(workout)
 
         localStorage.setItem('workouts',JSON.stringify(workouts))
     }
 
     static removeWorkout(id){
-        const workouts = Storage.getWorkout()
+        const workouts = Storage.getWorkouts()
         workouts.forEach((meal , index)=>{
            if(meal.id === id){
             workouts.splice(index,1)
