@@ -1,3 +1,14 @@
 body{
     font-family: 'Poppins',sans-serif;
 }
+
+.ri-close-fill{
+    font-size: 1.6rem;
+    color: red;
+    font-weight: bolder;
+  
+}
+
+.btn{
+    border: none;
+}
