@@ -152,8 +152,8 @@ _displayNewMeal(meal){
       >
         ${meal.calories}
       </div>
-      <button class="delete btn btn-danger btn-sm mx-2">
-        <i class="fa-solid fa-xmark"></i>
+      <button class="delete btn btn-sm mx-2">
+      <i class="ri-close-fill"></i>
       </button>
     </div>
   </div>
@@ -178,8 +178,8 @@ _displayNewWorkout(workout){
       >
         ${workout.calories}
       </div>
-      <button class="delete btn btn-danger btn-sm mx-2">
-        <i class="fa-solid fa-xmark"></i>
+      <button class="delete btn  btn-sm mx-2">
+      <i class="ri-close-fill"></i>
       </button>
     </div>
   </div>

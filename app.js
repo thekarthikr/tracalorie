@@ -1,4 +1,4 @@
-import '@fortawesome/fontawesome-free';
+import 'remixicon/fonts/remixicon.css'
 import{Modal,Collapse} from 'bootstrap'
 import TrackCalorie from './src/Tracker'
 import { Meal ,Workout } from './src/items'
@@ -59,7 +59,7 @@ _newItem(type,e){
 }  
  
 _removeItem(type,e){
-if(e.target.classList.contains('delete')|| e.target.classList.contains('fa-xmark')){
+if(e.target.classList.contains('delete')|| e.target.classList.contains('ri-close-fill')){
   if(confirm('Are you sure want to delete ?')){
     const id = e.target.closest('.card').getAttribute('data-id');
 
